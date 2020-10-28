@@ -6,8 +6,9 @@ Implemented over PyTorch, MONeT schedules allow training deep networks on a cons
 <img src="figs/monet_concept_fig.jpeg" width="800">
 </img></div>
 
-> [**Memory Optimization for Deep Networks**](),            
-> Aashaka Shah, Chao-Yuan Wu, Jayashree Mohan, Vijay Chidambaram, Philipp Kr&auml;henb&uuml;hl
+> **Memory Optimization for Deep Networks** <br/>
+> Aashaka Shah, Chao-Yuan Wu, Jayashree Mohan, Vijay Chidambaram, Philipp Kr&auml;henb&uuml;hl <br/>
+> [[paper]](https://arxiv.org/abs/2010.14501)
 
 
 ## Installation
@@ -146,6 +147,20 @@ Other modes may be used for experimenting with MONeT:
 - `newnode` selects intermediate-activate optimization
 
 Refer the paper for details about the optimizations.
+
+## Citation
+If you use MONeT in your work, please consider citing us as
+
+```
+@misc{shah2020memory,
+      title={Memory Optimization for Deep Networks},
+      author={Aashaka Shah and Chao-Yuan Wu and Jayashree Mohan and Vijay Chidambaram and Philipp Krähenbühl},
+      year={2020},
+      eprint={2010.14501},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```
 
 ## Acknowledgements
 The code for UNeT is taken from [Pytorch-UNet](https://github.com/milesial/Pytorch-UNet) by [milesial](https://github.com/milesial). Distributed Data Parallel training example code is borrowed from the [distributed tutorial](https://github.com/yangkky/distributed_tutorial) by [yangkky](https://github.com/yangkky).
