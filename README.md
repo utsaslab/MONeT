@@ -8,7 +8,7 @@ Implemented over PyTorch, MONeT schedules allow training deep networks on a cons
 
 > **Memory Optimization for Deep Networks** <br/>
 > Aashaka Shah, Chao-Yuan Wu, Jayashree Mohan, Vijay Chidambaram, Philipp Kr&auml;henb&uuml;hl <br/>
-> [[paper]](https://arxiv.org/abs/2010.14501)
+> In ICLR 2021 [[paper]](https://openreview.net/pdf?id=bnY0jm4l59)
 
 
 ## Installation
@@ -55,6 +55,13 @@ python imagenet.py DATA_DIR -a [arch] --gpu 0 \
         --epochs [num_epochs] \
         --batch-size [batch_size] \
         --solution_file [path to solution file]
+```
+
+At higher batch sizes, it is possible that the PyTorch memory allocator outputs an Out-Of-Memory error even if the schedule executed should run without any issues. This is because of the caching-nature of the memory allocator. Please create a pool of expected memory usage before allocating any tensors for the training using the following code snippet:
+
+```
+pool = torch.zeros(expected_memory/4).cuda()
+del pool
 ```
 
 ## Schedule zoo
