@@ -5,7 +5,7 @@ setuptools.setup(
     version="0.0.1",
     description="Memory Optimized Network Training Framework",
     url="https://github.com/philkr/lowrank_conv",
-    packages=setuptools.find_packages(include = ['monet', 'monet.*', 'models', 'checkmate']),
+    packages=setuptools.find_packages(include = ['monet', 'monet.*', 'models', 'checkmate', 'gist']),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
