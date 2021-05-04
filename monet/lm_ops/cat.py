@@ -2,7 +2,7 @@ from .base import *
 import torch
 
 
-@implements(['aten::cat'], ['normal', 'multiway', 'newnode', 'multiway_newnode', 'conv_multiway_newnode', 'conv_normal'])
+@implements(['aten::cat'], ['normal', 'multiway', 'newnode', 'multiway_newnode', 'conv_multiway_newnode', 'conv_normal', 'gist'])
 class Cat(OP):
     params = None
 

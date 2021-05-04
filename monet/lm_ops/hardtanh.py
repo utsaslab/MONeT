@@ -6,7 +6,7 @@ import numpy as np
 lrhardtanh_cpp = load(name="lrhardtanh_cpp", sources=[this_dir/"lrhardtanh.cpp"], extra_cflags=['-std=c++17'])
 
 
-@implements(['aten::hardtanh'], ['normal', 'multiway', 'newnode', 'multiway_newnode', 'conv_multiway_newnode', 'conv_normal'])
+@implements(['aten::hardtanh'], ['normal', 'multiway', 'newnode', 'multiway_newnode', 'conv_multiway_newnode', 'conv_normal', 'gist'])
 class InputActHardTanh(OP):
     backward_storage = InputStorage(0)
     params = None
@@ -71,7 +71,7 @@ class InputActHardTanh(OP):
             return lrhardtanh_cpp.hardtanh_backward(x, ip, lower, upper)
 
 
-@implements(['aten::hardtanh_'], ['normal','multiway', 'multiway_newnode', 'conv_multiway_newnode', 'conv_normal'])
+@implements(['aten::hardtanh_'], ['normal','multiway', 'multiway_newnode', 'conv_multiway_newnode', 'conv_normal', 'gist'])
 class OutputActHardTanh(OP):
     backward_storage = OutputStorage()
     params = None

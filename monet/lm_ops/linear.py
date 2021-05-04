@@ -2,7 +2,7 @@ from .base import *
 import torch
 
 
-@implements(['aten::addmm'], ['none'])
+@implements(['aten::addmm'], ['none', 'gist'])
 class AddMM(OP):
     backward_storage = InputStorage(1, 2)
     params = None

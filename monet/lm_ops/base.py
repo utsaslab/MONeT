@@ -32,7 +32,7 @@ class OP:
 
 
 registry = {}
-all_modes = ["none", "normal", "multiway", "newnode", "multiway_newnode", "conv_multiway_newnode", "conv_normal"]
+all_modes = ["none", "normal", "multiway", "newnode", "multiway_newnode", "conv_multiway_newnode", "conv_normal", "gist"]
 
 def implements(names, modes):
     def _wrapper(C):

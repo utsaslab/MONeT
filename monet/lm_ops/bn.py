@@ -23,9 +23,6 @@ class InputActBatchNorm(OP):
             if self.running_mean is None:
                 self.running_mean = running_mean.requires_grad_(False)
                 self.running_var = running_var.requires_grad_(False)
-            # TODO(cywu): fix this hack
-            # running_mean.requires_grad = False
-            # running_var.requires_grad = False
 
             if self.params == None:  # if this is the first forward pass, save the values
                 out, save_mean, save_var, res_space = mybn_cpp.forward(
@@ -41,8 +38,7 @@ class InputActBatchNorm(OP):
         with torch.no_grad():
             input_, weight, bias, running_mean, running_var = stored
             training, eps, save_mean, save_var, res_space = self.params
-            # running_mean.requires_grad = False
-            # running_var.requires_grad = False
+
             if training:
                 di_app, dw_app, db_app = mybn_cpp.cudnn_backward(
                     input_, grad_output, weight,
@@ -52,14 +48,50 @@ class InputActBatchNorm(OP):
             else:
                 raise NotImplementedError
 
-            # Delete it outside
-            # del self.save_mean
-            # del self.save_var
             if not nodel:
                 del stored[4], stored[3], stored[2], stored[1], stored[0]
 
             return di_app, dw_app, db_app, None, None
 
+@implements(['aten::batch_norm'], ['gist'])
+class InputActBatchNorm(OP):
+    backward_storage = InputStorage(0, 1, 2, 3, 4)
+    params = None   # params memory is unaccounted for => save_mean and save_var will occupy memory over the expected memory
+    running_mean = None
+    running_var = None
+
+    def forward(self, input_, weight, bias,
+                running_mean, running_var,
+                training=0, momentum=0.1, eps=1e-5, *args, **kwargs):
+        with torch.no_grad():
+            if self.running_mean is None:
+                self.running_mean = running_mean.requires_grad_(False)
+                self.running_var = running_var.requires_grad_(False)
+
+            out, save_mean, save_var, res_space = mybn_cpp.forward(
+                input_, self.running_mean, self.running_var, weight, bias,
+                training, momentum, eps)
+            self.params = training, eps, save_mean, save_var, res_space
+            return out
+
+    def backward(self, grad_output, stored, nodel=False):
+        with torch.no_grad():
+            input_, weight, bias, running_mean, running_var = stored
+            training, eps, save_mean, save_var, res_space = self.params
+
+            if training:
+                di_app, dw_app, db_app = mybn_cpp.cudnn_backward(
+                    input_, grad_output, weight,
+                    running_mean, running_var,
+                    save_mean, save_var,
+                    eps, res_space)
+            else:
+                raise NotImplementedError
+
+            if not nodel:
+                del stored[4], stored[3], stored[2], stored[1], stored[0]
+
+            return di_app, dw_app, db_app, None, None
 
 @implements(['aten::batch_norm'], ['multiway', 'multiway_newnode', 'conv_multiway_newnode'])
 class OutputActBatchNorm(OP):
@@ -78,9 +110,6 @@ class OutputActBatchNorm(OP):
             if self.running_mean is None:
                 self.running_mean = running_mean.requires_grad_(False)
                 self.running_var = running_var.requires_grad_(False)
-            # # TODO(cywu): fix this hack
-            # running_mean.requires_grad = False
-            # running_var.requires_grad = False
 
             if self.params == None:  # if this is the first forward pass, save the values
                 out, save_mean, save_var, res_space = mybn_cpp.forward(
@@ -97,10 +126,6 @@ class OutputActBatchNorm(OP):
             weight, bias, running_mean, running_var, output = stored
             training, eps, save_mean, save_var, res_space = self.params
             if training:
-                # input_ = (
-                #     output - bias.view((1, -1, 1, 1))
-                # ) * (save_var / weight).view((1, -1, 1, 1)) + save_mean.view((1, -1, 1, 1))
-
                 di_app, dw_app, db_app = mybn_cpp.output_activated_bn_backward(
                     grad_output, output, weight, bias,
                     running_mean, running_var,
